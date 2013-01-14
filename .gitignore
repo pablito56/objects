@@ -1,5 +1,8 @@
 *.py[cod]
 
+# emacs
+*~
+
 # C extensions
 *.so
 
@@ -33,3 +36,6 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Pydev
+.settings
