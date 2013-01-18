@@ -14,7 +14,6 @@ class MyClass(object):
     def __init__(self):
         self.attr = "inst_attr_value"
 
-
     def __str__(self):
         return " | ".join((self.class_attr, self.attr))
 

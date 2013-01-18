@@ -14,7 +14,7 @@ old_inst = MyOldClass()
 old_inst.print_instance_class()
 
 
-# Let's create a new-style class
+# Let's create an identical new-style class
 class MyNewClass(object):
     def print_instance_class(self):
         print type(self)
@@ -26,7 +26,7 @@ new_inst.print_instance_class()
 
 #===============================================================================
 # - New-style classes introduced in 2.2 to unify classes and types
-# - Provides unified object model with a full meta-model
+# - Provide unified object model with a full meta-model
 # - Other benefits: subclass most built-in types, descriptors (slots, properties, static and class methods)...
 # - By default all classes are old-style until Python 3
 #
@@ -108,7 +108,7 @@ print f1 == 2
 print f2 <= f1
 
 
-print f1['num'], "/", f1[1], "=", f1
+print f1['num'], "/", f1[1], "==", f1
 
 
 class MirrorFloat(float):
@@ -133,4 +133,4 @@ print repr(inst)
 
 
 print inst + 2
-print inst - 5
+print inst - 1.3
