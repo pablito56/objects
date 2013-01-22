@@ -14,15 +14,19 @@ from pygments.lexers import PythonLexer
 from pygments.formatters import Terminal256Formatter
 
 
-FORMATTER_STYLE = 'colorful'
-RELOAD_BLOCKS_CMD = '%reload_blocks'
+FORMATTER_STYLE = 'emacs'
+#===============================================================================
+# TO FIND OUT ALL THE STYLES:
+# python -c "from pygments.styles import get_all_styles; print list(get_all_styles())"
+#===============================================================================
+RELOAD_BLOCKS_CMD = 'reload_blocks'
 BLANKS = 1
 
 
-class HistoryConsole(code.InteractiveConsole):
+class HistoryConsole(code.InteractiveConsole, object):
     def __init__(self, locals=None, filename="<console>",
                  histfile=path.expanduser("~/.demo_console_history")):
-        code.InteractiveConsole.__init__(self, locals, filename)
+        super(HistoryConsole, self).__init__(locals, filename)
         self.init_history(histfile)
 
     def init_history(self, histfile):
@@ -37,7 +41,7 @@ class HistoryConsole(code.InteractiveConsole):
     def save_history(self, histfile):
         readline.write_history_file(histfile)
 
-class DemoConsole(HistoryConsole):
+class DemoConsole(HistoryConsole, object):
     def __init__(self, files=None, blanks=1, *args, **kargs):
         if not files:
             self.files = ["example{0}.py".format(num) for num in xrange(999)]
@@ -45,8 +49,7 @@ class DemoConsole(HistoryConsole):
             self.files = files
         self.blanks = blanks
         self.reload_blocks()
-        HistoryConsole.__init__(self, *args, **kargs)
-#        super(DemoConsole, self).__init__(*args, **kargs)
+        super(DemoConsole, self).__init__(*args, **kargs)
 
     def reload_blocks(self, new_files=[]):
         if new_files:
@@ -58,7 +61,6 @@ class DemoConsole(HistoryConsole):
         self.write("Loaded {0} code blocks\n".format(len(self.blocks)))
 
     def push(self, line):
-#        from ipdb import set_trace; set_trace()
         if not line.strip() and len(self.buffer) == 0:
             # Accumulate next code blocks until they are executable (and execute them)
             while True:
@@ -70,7 +72,7 @@ class DemoConsole(HistoryConsole):
                         self.is_executable = True
                         is_compilable = True
                     else:
-                        self.write("No more code blocks available. Execute '{0}' to restart\n".format(RELOAD_BLOCKS_CMD))
+                        self.write("No more code blocks available. Execute '%{0} [FILES]' to restart\n".format(RELOAD_BLOCKS_CMD))
                         return False
                 else:
                     try:
@@ -82,16 +84,8 @@ class DemoConsole(HistoryConsole):
                                               PythonLexer(),
                                               Terminal256Formatter(style=FORMATTER_STYLE))
                     print code_to_print
-#                    print "PUSHING '", "".join(self.code_block), "' ->",
-#                    for code_line in self.code_block:
-#                        res = HistoryConsole.push(self, code_line[:-1] if code_line[-1] == "\n" else code_line)
-#                    HistoryConsole.push(self, "".join(self.code_block))
-#                    self.buffer = [line[:-1] if line[-1] == "\n" else line for line in self.code_block]
-                    map(self.push, [line[:-1] if line[-1] == "\n" else line for line in self.code_block if line != '\n'])
-#                    self.runsource("".join(self.code_block), self.filename)
-#                    print res
-                    HistoryConsole.push(self, "\n")
-#                    super(DemoConsole, self).push("".join(self.code_block))
+                    map(super(DemoConsole, self).push, [line[:-1] if line[-1] == "\n" else line for line in self.code_block if line != '\n'])
+                    super(DemoConsole, self).push("\n")
                     self.code_block = b
                     self.is_executable = True
                     return False
@@ -100,26 +94,21 @@ class DemoConsole(HistoryConsole):
                 self.code_block.extend(b)
                 self.is_executable = code.compile_command("".join(self.code_block), "<stdin>", "exec") is not None
             return False
-        elif line.strip().startswith(RELOAD_BLOCKS_CMD) and len(self.buffer) == 0:
+        elif line.strip().startswith('%' + RELOAD_BLOCKS_CMD) and len(self.buffer) == 0:
             self.reload_blocks(line.strip().split(" ")[1:])
             return False
-        return HistoryConsole.push(self, line)
-#        return super(DemoConsole, self).push(line)
+        return super(DemoConsole, self).push(line)
 
 
 def clean_block_trail(block):
     '''Remove last empty last as well as last break line of given code block
     '''
-#    print "CLEANING"
-#    print ">>> ", block, " <<<"
     while True:
-#        print ">>> ", block[-1], "|", block[-1].strip(), " <<<"
         if not block[-1].strip():
             block.pop(-1)
         else:
             break
     block[-1] = block[-1].replace("\n", "")
-#    print ">>> ", block[-1], " <<<"
     return block
 
 

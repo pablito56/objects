@@ -1,9 +1,7 @@
 #-*- coding: utf-8 -*-
 u'''
 Created on Jan 17, 2013
-
 TEST1: Test classes declaration with empty lines
-
 @author: pev
 '''
 
