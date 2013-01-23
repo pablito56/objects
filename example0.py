@@ -71,7 +71,7 @@ except TypeError, e:
 
 
 #===============================================================================
-# This can lead to some common errors!!
+# - Mutable and immutable types behavior differences can lead to some common errors!!
 #===============================================================================
 
 
@@ -100,10 +100,8 @@ print lstB, '@', id(lstB)
 
 
 #===============================================================================
-# Mutable and immutabel types common errors:
-# - Multiple assignment --> Avoid multiple assignment of mutable types!
-#    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy 
-# - Class attributes
+# Mutable and immutable types common errors:
+# - Multiple assignments
 #===============================================================================
 
 
@@ -112,31 +110,32 @@ class MutablesClass(object):
     list_inst = []
     int_inst = 0
 
-inst1 = MutablesClass()
-inst2 = MutablesClass()
+# Let's instantiate the class twice
+inst_A = MutablesClass()
+inst_B = MutablesClass()
 
 
-# Let's change one of the instances of my class and check the other instance
-inst1.list_inst.append(1)
-inst1.int_inst += 1
-print inst2.list_inst
-print inst2.int_inst
+# Let's change one of the instances and check the other instance values
+inst_A.int_inst += 1
+inst_A.list_inst.append(1)
+print inst_B.int_inst
+print inst_B.list_inst
+print inst_A.list_inst is inst_B.list_inst
 
 
 #===============================================================================
-# Mutable and immutabel types common errors:
-# - Multiple assignment --> Avoid multiple assignment of mutable types
-#    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy 
-# - Class attributes --> Instantiate in the __init__ !
-# - Functions parameters default value
+# Mutable and immutable types common errors:
+# - Multiple assignment
+# - Class attributes
 #===============================================================================
 
 
-# Let's create and call a method
+# Let's create a function which returns a modified list
 def add_to_list(item, lst=[]):
     lst.append(item)
     return lst
 
+# Let's call this function twice 
 result1 = add_to_list(1)
 result2 = add_to_list(2)
 print result1 is result2
@@ -144,9 +143,83 @@ print result1, 'vs', result2
 
 
 #===============================================================================
-# Mutable and immutabel types common errors:
+# Mutable and immutable types common errors:
+# - Multiple assignment
+# - Class attributes
+# - Functions parameters default value
+#===============================================================================
+
+
+##===============================================================================
+##===============================================================================
+## TIME TO START WORKING!
+##
+## EXERCISE 0:
+## - Go to exercices/exercise_0 and edit exercise_0.py
+## - Change the functions and class implementation to let tests_0.py pass
+## - You have to solve these common errors
+## - Check with nosetests
+##===============================================================================
+##===============================================================================
+
+# Solution multiple assignment of mutables
+def split_even_odd(numbers):
+    '''Split incoming numbers iterable in two lists with even and odd numbers
+    :param numbers: iterable with numbers
+    :return (even, odd) lists with corresponding values
+    '''
+    even = []
+    odd = []
+    for num in numbers:
+        if num % 2:
+            odd.append(num)
+        else:
+            even.append(num)
+    return even, odd
+
+
+# Solution mutable as class attribute
+class NumersList(object):
+    '''Class which handles even and odd numbers lists
+    '''
+    even = None
+    odd = None
+
+    def __init__(self):
+        self.even = []
+        self.odd = []
+
+    def append_number(self, num):
+        '''Add a number to its corresponding list (even or odd)
+        '''
+        if num % 2:
+            self.odd.append(num)
+        else:
+            self.even.append(num)
+
+
+# Solution mutable as function default value
+def update_even_odd(numbers, even=None, odd=None):
+    '''Update incoming even and odd numbers lists with corresponding values of numbers iterable
+    :param numbers: iterable with numbers
+    :return (even, odd) lists with corresponding values
+    '''
+    if even is None:
+        even = []
+    if odd is None:
+        odd = []
+    for num in numbers:
+        if num % 2:
+            odd.append(num)
+        else:
+            even.append(num)
+    return even, odd
+
+
+#===============================================================================
+# Mutable and immutable types common errors:
 # - Multiple assignment --> Avoid multiple assignment of mutable types
-#    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy 
+#    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy
 # - Class attributes --> Instantiate in the __init__
-# - Functions parameters default value --> Use None as default value and instantiate inside the function ! 
+# - Functions parameters default value --> Use None as default value and instantiate inside the function
 #===============================================================================
