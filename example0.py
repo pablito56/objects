@@ -1,10 +1,10 @@
 #-*- coding: utf-8 -*-
 u'''
-EXAMPLE 0: Objects: type, id and value
+EXAMPLE 0: Objects: type, id, value, mutable vs. immutable
 '''
 
 
-# Let's instantiate an int and check its id, type and value
+# Let's instantiate a string and check its id, type and value
 inst = 'abcd'
 print id(inst)
 print type(inst)
@@ -12,7 +12,7 @@ print inst
 
 
 # Let's compare the ids of two ints
-inst = 12345; print inst is 12345  # Done in one line due to 'code' module issues with ids
+inst = 12345; print inst is 12345  # Done in one line due to std lib 'code' module issues with ids
 
 
 #===============================================================================
@@ -26,11 +26,13 @@ inst = 12345; print inst is 12345  # Done in one line due to 'code' module issue
 inst = []; print inst is []
 
 
-# WTF!? Let's try again
+# WTF!? Let's try again with ints
 inst_int_1 = 12345; inst_int_2 = 12345
+print id(inst_int_1), 'vs.', id(inst_int_2)
+
+# Ok. Let's try again with other types
 inst_list_1 = []; inst_list_2 = []
 inst_none = None
-print id(inst_int_1), 'vs.', id(inst_int_2)
 print id(inst_list_1), 'vs.', id(inst_list_2)
 print id(inst_none), 'vs.', id(None)
 
@@ -71,6 +73,7 @@ except TypeError, e:
 
 
 #===============================================================================
+# WARNING!
 # - Mutable and immutable types behavior differences can lead to some common errors!!
 #===============================================================================
 
@@ -117,7 +120,7 @@ inst_B = MutablesClass()
 
 # Let's change one of the instances and check the other instance values
 inst_A.int_inst += 1
-inst_A.list_inst.append(1)
+inst_A.list_inst.extend([5, 7, 9])
 print inst_B.int_inst
 print inst_B.list_inst
 print inst_A.list_inst is inst_B.list_inst
@@ -154,20 +157,27 @@ print result1, 'vs', result2
 ##===============================================================================
 ## TIME TO START WORKING!
 ##
-## EXERCISE 0:
+## EXERCISE 0: Solve common mutable types usage errors
 ## - Go to exercices/exercise_0 and edit exercise_0.py
 ## - Change the functions and class implementation to let tests_0.py pass
-## - You have to solve these common errors
-## - Check with nosetests
+## - Check tests with nosetests
 ##===============================================================================
 ##===============================================================================
 
-# Solution multiple assignment of mutables
+# Wrong multiple assignment of mutables
 def split_even_odd(numbers):
-    '''Split incoming numbers iterable in two lists with even and odd numbers
-    :param numbers: iterable with numbers
-    :return (even, odd) lists with corresponding values
-    '''
+    even = odd = []
+    for num in numbers:
+        if num % 2:
+            odd.append(num)
+        else:
+            even.append(num)
+    return even, odd
+
+print split_even_odd(range(0, 11))
+
+# Solution multiple assignment of mutables: avoid them
+def split_even_odd(numbers):
     even = []
     odd = []
     for num in numbers:
@@ -177,11 +187,27 @@ def split_even_odd(numbers):
             even.append(num)
     return even, odd
 
+print split_even_odd(range(0, 11))
 
-# Solution mutable as class attribute
-class NumersList(object):
-    '''Class which handles even and odd numbers lists
-    '''
+
+# Wrong class attributes of mutable type 
+class NumbersList(object):
+    even = []
+    odd = []
+
+    def append_number(self, num):
+        if num % 2:
+            self.odd.append(num)
+        else:
+            self.even.append(num)
+
+num_lst_A = NumbersList()
+num_lst_A.append_number(7)
+num_lst_B = NumbersList()
+print num_lst_B.even, num_lst_B.odd
+
+# Solution mutable as class attribute: instantiate in the __init__
+class NumbersList(object):
     even = None
     odd = None
 
@@ -190,20 +216,35 @@ class NumersList(object):
         self.odd = []
 
     def append_number(self, num):
-        '''Add a number to its corresponding list (even or odd)
-        '''
         if num % 2:
             self.odd.append(num)
         else:
             self.even.append(num)
 
+num_lst_A = NumbersList()
+num_lst_A.append_number(7)
+num_lst_B = NumbersList()
+print num_lst_B.even, num_lst_B.odd
 
-# Solution mutable as function default value
-def update_even_odd(numbers, even=None, odd=None):
+
+# Wrong mutable as function default value
+def update_even_odd(numbers, even=[], odd=[]):
     '''Update incoming even and odd numbers lists with corresponding values of numbers iterable
     :param numbers: iterable with numbers
     :return (even, odd) lists with corresponding values
     '''
+    for num in numbers:
+        if num % 2:
+            odd.append(num)
+        else:
+            even.append(num)
+    return even, odd
+
+print update_even_odd(range(0, 11))
+print update_even_odd(range(100, 111))
+
+# Solution mutable as function default value: use None as default value and instantiate inside the function
+def update_even_odd(numbers, even=None, odd=None):
     if even is None:
         even = []
     if odd is None:
@@ -215,11 +256,19 @@ def update_even_odd(numbers, even=None, odd=None):
             even.append(num)
     return even, odd
 
+print update_even_odd(range(0, 11))
+print update_even_odd(range(100, 111))
+
 
 #===============================================================================
-# Mutable and immutable types common errors:
+# To sum up, mutable and immutable types common errors and solution:
 # - Multiple assignment --> Avoid multiple assignment of mutable types
 #    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy
 # - Class attributes --> Instantiate in the __init__
 # - Functions parameters default value --> Use None as default value and instantiate inside the function
+#===============================================================================
+
+#===============================================================================
+# MORE INFO:
+# - http://docs.python.org/2.7/reference/datamodel.html#objects-values-and-types
 #===============================================================================

@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-EXAMPLE 1: Classes
+EXAMPLE 1: Classes: new-style vs. old-style, data model & customization
 '''
 
 
@@ -134,3 +134,10 @@ print repr(inst)
 
 print inst + 2
 print inst - 1.3
+
+#===============================================================================
+# MORE INFO:
+# - http://docs.python.org/2.7/reference/datamodel.html#special-method-names
+# - http://www.python.org/doc/newstyle/
+# - http://www.python.org/download/releases/2.2.3/descrintro/
+#===============================================================================

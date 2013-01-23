@@ -21,7 +21,7 @@ def split_even_odd(numbers):
 
 
 # Mutable as class attribute
-class NumersList(object):
+class NumbersList(object):
     '''Class which handles even and odd numbers lists
     '''
     even = None

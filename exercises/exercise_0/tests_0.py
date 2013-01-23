@@ -32,7 +32,7 @@ class TestMutableImmutable(VerboseTestCase):
     def test_append_number_even(self):
         '''Check mutable class attributes
         '''
-        inst = exercise_0.NumersList()
+        inst = exercise_0.NumbersList()
         number = 6
         expected_even = [number]
         expected_odd = []
@@ -43,7 +43,7 @@ class TestMutableImmutable(VerboseTestCase):
     def test_append_number_odd(self):
         '''Check mutable as class attributes
         '''
-        inst = exercise_0.NumersList()
+        inst = exercise_0.NumbersList()
         number = 7
         expected_even = []
         expected_odd = [number]
