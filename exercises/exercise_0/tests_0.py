@@ -3,8 +3,8 @@ u'''
 Test exercise 0: mutable and immutable types common errors
 '''
 import unittest
-import exercise_0
-# import solution_0 as exercise_0
+import exercise_0 as source
+# import solution_0 as source
 
 
 class VerboseTestCase(unittest.TestCase):
@@ -25,14 +25,14 @@ class TestMutableImmutable(VerboseTestCase):
         numbers = range(0, 16)
         expected_even = range(0, 16, 2)
         expected_odd = range(1, 16, 2)
-        even, odd = exercise_0.split_even_odd(numbers)
+        even, odd = source.split_even_odd(numbers)
         self.assertEqual(even, expected_even, "Even values differ")
         self.assertEqual(odd, expected_odd, "Odd values differ")
 
     def test_append_number_even(self):
         '''Check mutable class attributes
         '''
-        inst = exercise_0.NumbersList()
+        inst = source.NumbersList()
         number = 6
         expected_even = [number]
         expected_odd = []
@@ -43,7 +43,7 @@ class TestMutableImmutable(VerboseTestCase):
     def test_append_number_odd(self):
         '''Check mutable as class attributes
         '''
-        inst = exercise_0.NumbersList()
+        inst = source.NumbersList()
         number = 7
         expected_even = []
         expected_odd = [number]
@@ -57,7 +57,7 @@ class TestMutableImmutable(VerboseTestCase):
         numbers = range(0, 16)
         expected_even = range(0, 16, 2)
         expected_odd = range(1, 16, 2)
-        even, odd = exercise_0.update_even_odd(numbers)
+        even, odd = source.update_even_odd(numbers)
         self.assertEqual(even, expected_even, "Even values differ")
         self.assertEqual(odd, expected_odd, "Odd values differ")
 
@@ -67,7 +67,7 @@ class TestMutableImmutable(VerboseTestCase):
         numbers = range(1, 17)
         expected_even = range(2, 17, 2)
         expected_odd = range(1, 17, 2)
-        even, odd = exercise_0.update_even_odd(numbers)
+        even, odd = source.update_even_odd(numbers)
         self.assertEqual(even, expected_even, "Even values differ")
         self.assertEqual(odd, expected_odd, "Odd values differ")
 

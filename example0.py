@@ -5,58 +5,76 @@ EXAMPLE 0: Objects: type, id, value, mutable vs. immutable
 
 
 # Let's instantiate a string and check its id, type and value
-inst = 'abcd'
-print id(inst)
-print type(inst)
-print inst
+str_inst = 'abcd'
+print id(str_inst)
+print type(str_inst)
+print str_inst
 
 
-# Let's compare the ids of two ints
-inst = 12345; print inst is 12345  # Done in one line due to std lib 'code' module issues with ids
+# Let's compare the ids of two bool values
+bool_inst_1 = True
+bool_inst_2 = True
+print bool_inst_1 is bool_inst_2
+print bool_inst_1 is True
 
 
 #===============================================================================
 # - Every object has an identity (its address), a type and a value
 # - Use 'id' and 'is' to retrieve or compare the id of an object
-# - The interpreter reuses values
+# - The interpreter may reuse values
 #===============================================================================
 
 
 # Let's do the same with lists
-inst = []; print inst is []
+lst_inst = []
+print lst_inst is []
 
 
 # WTF!? Let's try again with ints
-inst_int_1 = 12345; inst_int_2 = 12345
-print id(inst_int_1), 'vs.', id(inst_int_2)
+int_inst_1 = 7
+int_inst_2 = 7
+print id(int_inst_1), 'vs.', id(int_inst_2)
 
 # Ok. Let's try again with other types
-inst_list_1 = []; inst_list_2 = []
-inst_none = None
-print id(inst_list_1), 'vs.', id(inst_list_2)
-print id(inst_none), 'vs.', id(None)
+none_inst = None
+print id(none_inst), 'vs.', id(None)
+
+list_inst_1 = []
+list_inst_2 = []
+print id(list_inst_1), 'vs.', id(list_inst_2)
 
 
 #===============================================================================
 # - Objects whose value can change are said to be mutable (dicts, lists)
 # - Objects whose value is unchangeable once they are created are called immutable (numbers, strings, tuples)
 # - Mutable types allow in-place modifications (append in a list, pop in a dictionary...)
-# - Immutable types values are reused by the interpreter (so their id is the same)
+# - Immutable types values may be reused by the interpreter (so their id is the same)
 #===============================================================================
 
 
-# Let's change (reassign) a string value
-inst = 'instance value'
-print inst, '@', id(inst)
-inst = inst + ' updated'
-print inst, '@', id(inst)
+# Let's check how immutable values are reused 
+sevens = [7, 7, 7, 7, 7]
+print map(id, sevens)
+abcs = ["abc", "abc", "abc", "abc", "abc"]
+print map(id, abcs)
+tuples = [(), (), ()]
+print map(id, tuples)
+lists = [[], [], []]
+print map(id, lists)
 
 
-# Let's update a list content
-inst = ['instance', 'value']
-print inst, '@', id(inst)
-inst.append('updated')
-print inst, '@', id(inst)
+# Let's change a string value (reassign!)
+str_inst = 'instance value'
+print str_inst, '@', id(str_inst)
+str_inst = str_inst + ' updated'
+print str_inst, '@', id(str_inst)
+
+
+# Let's change a list content (in-place modification!)
+lst_inst = ['instance', 'value']
+print lst_inst, '@', id(lst_inst)
+lst_inst.append('updated')
+print lst_inst, '@', id(lst_inst)
 
 
 # Now let's play with dicts
@@ -80,31 +98,32 @@ except TypeError, e:
 
 # Multiple assignment with ints (immutable)
 intA = intB = 0
-print intA, '@', id(intA)
-print intB, '@', id(intB)
+print "intA:", intA, '@', id(intA)
+print "intB:", intB, '@', id(intB)
 
 
 # Let's modify one of the ints
 intA += 1
-print intA, '@', id(intA)
-print intB, '@', id(intB)
+print "intA:", intA, '@', id(intA)
+print "intB:", intB, '@', id(intB)
 
 
 # Ok. Multiple assignment with lists (mutable)
 lstA = lstB = []
-print lstA, '@', id(lstA)
-print lstB, '@', id(lstB)
+print "lstA:", lstA, '@', id(lstA)
+print "lstB:", lstB, '@', id(lstB)
 
 
 # Let's modify one of the lists
 lstA.extend([1, 2, 3])
-print lstA, '@', id(lstA)
-print lstB, '@', id(lstB)
+print "lstA:", lstA, '@', id(lstA)
+print "lstB:", lstB, '@', id(lstB)
 
 
 #===============================================================================
 # Mutable and immutable types common errors:
 # - Multiple assignments
+#    - The same applies with shallow copy or constructor by copy
 #===============================================================================
 
 
@@ -121,8 +140,8 @@ inst_B = MutablesClass()
 # Let's change one of the instances and check the other instance values
 inst_A.int_inst += 1
 inst_A.list_inst.extend([5, 7, 9])
-print inst_B.int_inst
-print inst_B.list_inst
+print "inst_B.int_inst:", inst_B.int_inst
+print "inst_B.list_inst:", inst_B.list_inst
 print inst_A.list_inst is inst_B.list_inst
 
 
@@ -138,7 +157,7 @@ def add_to_list(item, lst=[]):
     lst.append(item)
     return lst
 
-# Let's call this function twice 
+# Let's call this function twice
 result1 = add_to_list(1)
 result2 = add_to_list(2)
 print result1 is result2
@@ -148,8 +167,30 @@ print result1, 'vs', result2
 #===============================================================================
 # Mutable and immutable types common errors:
 # - Multiple assignment
+#    - The same applies with shallow copy or constructor by copy
 # - Class attributes
 # - Functions parameters default value
+#===============================================================================
+
+
+# Let's create a function which accidentally modifies input parameters
+def get_middle_item(input_lst):
+    return input_lst.pop(len(input_lst) / 2)
+
+# Let's call this function
+input = range(1, 6)
+print input
+print get_middle_item(input)
+print input
+
+
+#===============================================================================
+# Mutable and immutable types common errors:
+# - Multiple assignment
+#    - The same applies with shallow copy or constructor by copy
+# - Class attributes
+# - Functions parameters default value
+# - In-place modifications of function's mutable parameters 
 #===============================================================================
 
 
@@ -157,7 +198,7 @@ print result1, 'vs', result2
 ##===============================================================================
 ## TIME TO START WORKING!
 ##
-## EXERCISE 0: Solve common mutable types usage errors
+## EXERCISE 0: Solve common mutable types usage errors:
 ## - Go to exercices/exercise_0 and edit exercise_0.py
 ## - Change the functions and class implementation to let tests_0.py pass
 ## - Check tests with nosetests
@@ -176,6 +217,7 @@ def split_even_odd(numbers):
 
 print split_even_odd(range(0, 11))
 
+
 # Solution multiple assignment of mutables: avoid them
 def split_even_odd(numbers):
     even = []
@@ -190,7 +232,7 @@ def split_even_odd(numbers):
 print split_even_odd(range(0, 11))
 
 
-# Wrong class attributes of mutable type 
+# Wrong class attributes of mutable type
 class NumbersList(object):
     even = []
     odd = []
@@ -205,6 +247,7 @@ num_lst_A = NumbersList()
 num_lst_A.append_number(7)
 num_lst_B = NumbersList()
 print num_lst_B.even, num_lst_B.odd
+
 
 # Solution mutable as class attribute: instantiate in the __init__
 class NumbersList(object):
@@ -243,6 +286,7 @@ def update_even_odd(numbers, even=[], odd=[]):
 print update_even_odd(range(0, 11))
 print update_even_odd(range(100, 111))
 
+
 # Solution mutable as function default value: use None as default value and instantiate inside the function
 def update_even_odd(numbers, even=None, odd=None):
     if even is None:
@@ -266,6 +310,7 @@ print update_even_odd(range(100, 111))
 #    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy
 # - Class attributes --> Instantiate in the __init__
 # - Functions parameters default value --> Use None as default value and instantiate inside the function
+# - In-place modifications of function's mutable parameters --> Avoid it. Keep in mind waht you are doing 
 #===============================================================================
 
 #===============================================================================
