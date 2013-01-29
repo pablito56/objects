@@ -20,37 +20,18 @@ class TestNewStyle(VerboseTestCase):
     '''Test exercise 1: new-style classes
     '''
     def test_old_style_inheritance(self):
-        '''Check inheritance from old-style classes
+        '''Check inheritance from old-style class as new-style
         '''
         custom_parser = source.CustomOptionParser()
         self.assertEqual(type(custom_parser), custom_parser.__class__, "Type and class difer in CustomOptionParser")
 
 
 class TestCustomOrderedDict(VerboseTestCase):
-    '''Test exercise 2: data model
+    '''Test exercise 1: data model
     '''
-    def test_str(self):
-        vowels = source.CustomOrderedDict(zip("aeiou", "AEIOU"))
-        #=======================================================================
-        # CustomOrderedDict([('a', 'A'), ('e', 'E'), ('i', 'I'), ('o', 'O'), ('u', 'U')])
-        #=======================================================================
-        expected = "{'a': 'A', 'e': 'E', 'i': 'I', 'o': 'O', 'u': 'U'}"
-        expected2 = "{'a': 'A', 'e': 'E', 'i': 'I', 'o': 'O', 'u': 'U', 1: 1}"
-        self.assertEqual(str(vowels),  expected, "Wrong str in CustomOrderedDict")
-        vowels[1] = 1
-        self.assertEqual(str(vowels),  expected2, "Wrong str in CustomOrderedDict")
-
-    #===========================================================================
-    # def test_get_item(self):
-    #    vowels = source.CustomOrderedDict(zip("aeiou", "AEIOU"))
-    #    #=======================================================================
-    #    # CustomOrderedDict([('a', 'A'), ('e', 'E'), ('i', 'I'), ('o', 'O'), ('u', 'U')])
-    #    #=======================================================================
-    #    self.assertEqual(vowels[2], "I", "Wrong index access in CustomOrderedDict")
-    #    self.assertEqual(vowels[-2], "O", "Wrong negative index access in CustomOrderedDict")
-    #===========================================================================
-
     def test_slicing(self):
+        '''Check __getitem__ customization (slicing) of CustomOrderedDict
+        '''
         vowels = source.CustomOrderedDict(zip("aeiou", "AEIOU"))
         #=======================================================================
         # CustomOrderedDict([('a', 'A'), ('e', 'E'), ('i', 'I'), ('o', 'O'), ('u', 'U')])
@@ -64,6 +45,10 @@ class TestCustomOrderedDict(VerboseTestCase):
         self.assertEqual(vowels[2:-10], source.CustomOrderedDict(), "Wrong slicing in CustomOrderedDict")
 
     def test_addition(self):
+        '''Check __add__ customization of CustomOrderedDict
+        It returns a new CustomOrderedDict with content of the first
+        CustomOrderedDict updated with the second (it may be a list of pairs)
+        '''
         vowels = source.CustomOrderedDict(zip("aeiou", "AEIOU"))
         #=======================================================================
         # CustomOrderedDict([('a', 'A'), ('e', 'E'), ('i', 'I'), ('o', 'O'), ('u', 'U')])
@@ -78,6 +63,10 @@ class TestCustomOrderedDict(VerboseTestCase):
         self.assertEqual(vowels, source.CustomOrderedDict(zip("aeiou", "AEIOU")), "Wrong addition in CustomOrderedDict (modified self)")
 
     def test_substraction(self):
+        '''Check __sub__ customization of CustomOrderedDict
+        It returns a new CustomOrderedDict with content of the first
+        CustomOrderedDict without the second's items (it may be a list of keys)
+        '''
         vowels = source.CustomOrderedDict(zip("aeiou", "AEIOU"))
         #=======================================================================
         # CustomOrderedDict([('a', 'A'), ('e', 'E'), ('i', 'I'), ('o', 'O'), ('u', 'U')])
@@ -91,52 +80,49 @@ class TestCustomOrderedDict(VerboseTestCase):
         self.assertEqual(vowels - letters, expected, "Wrong substraction in CustomOrderedDict (list)")
         self.assertEqual(vowels - letters_cod, expected, "Wrong substraction in CustomOrderedDict (CustomOrderedDict)")
         self.assertEqual(vowels, source.CustomOrderedDict(zip("aeiou", "AEIOU")), "Wrong substraction in CustomOrderedDict (modified self)")
-    
 
-#===============================================================================
-#    def test_append_number_even(self):
-#        '''Check mutable class attributes
-#        '''
-#        inst = exercise_0.NumbersList()
-#        number = 6
-#        expected_even = [number]
-#        expected_odd = []
-#        inst.append_number(number)
-#        self.assertEqual(inst.even, expected_even, "Even values differ")
-#        self.assertEqual(inst.odd, expected_odd, "Odd values differ")
-# 
-#    def test_append_number_odd(self):
-#        '''Check mutable as class attributes
-#        '''
-#        inst = exercise_0.NumbersList()
-#        number = 7
-#        expected_even = []
-#        expected_odd = [number]
-#        inst.append_number(number)
-#        self.assertEqual(inst.even, expected_even, "Even values differ")
-#        self.assertEqual(inst.odd, expected_odd, "Odd values differ")
-# 
-#    def test_update_even_odd_I(self):
-#        '''Check mutable as default value I
-#        '''
-#        numbers = range(0, 16)
-#        expected_even = range(0, 16, 2)
-#        expected_odd = range(1, 16, 2)
-#        even, odd = exercise_0.update_even_odd(numbers)
-#        self.assertEqual(even, expected_even, "Even values differ")
-#        self.assertEqual(odd, expected_odd, "Odd values differ")
-# 
-#    def test_update_even_odd_II(self):
-#        '''Check mutable as default value II
-#        '''
-#        numbers = range(1, 17)
-#        expected_even = range(2, 17, 2)
-#        expected_odd = range(1, 17, 2)
-#        even, odd = exercise_0.update_even_odd(numbers)
-#        self.assertEqual(even, expected_even, "Even values differ")
-#        self.assertEqual(odd, expected_odd, "Odd values differ")
-#===============================================================================
 
+class TestAttrDict(VerboseTestCase):
+    '''Test exercise 1: data model and customization of basic type
+    '''
+    def test_setattr_existent(self):
+        '''Check __setattr__ customization of AttrDict
+        It must update a dictionary key only if it exists
+        '''
+        attr_d = source.AttrDict(zip("aeiou", range(1, 6)))
+        attr_d.a = 0
+        self.assertTrue('a' not in attr_d.__dict__, "Wrong attribute assignment in AttrDict")
+        self.assertEqual(attr_d['a'], 0, "Wrong attribute assignment in AttrDict")
+        self.assertEqual(attr_d.a, 0, "Wrong attribute assignment in AttrDict")
+
+    def test_setattr_new(self):
+        '''Check __setattr__ customization of AttrDict
+        It must update a dictionary key only if it exists
+        '''
+        attr_d = source.AttrDict(zip("aeiou", range(1, 6)))
+        attr_d.f = 6
+        self.assertTrue('f' not in attr_d, "Wrong attribute assignment in AttrDict")
+        self.assertEqual(attr_d.__dict__['f'], 6, "Wrong attribute assignment in AttrDict")
+        self.assertEqual(attr_d.f, 6, "Wrong attribute assignment in AttrDict")
+
+    def test_delattr_new(self):
+        '''Check __delattr__ customization of AttrDict
+        It must delete a dictionary key only if it exists
+        '''
+        attr_d = source.AttrDict(zip("aeiou", range(1, 6)))
+        attr_d.f = 6
+        del attr_d.f
+        self.assertTrue('f' not in attr_d, "Wrong attribute deletion in AttrDict")
+        self.assertTrue('f' not in attr_d.__dict__, "Wrong attribute deletion in AttrDict")
+
+    def test_delattr_existent(self):
+        '''Check __delattr__ customization of AttrDict
+        It must delete a dictionary key only if it exists
+        '''
+        attr_d = source.AttrDict(zip("aeiou", range(1, 6)))
+        del attr_d.a
+        self.assertTrue('a' not in attr_d, "Wrong attribute deletion in AttrDict")
+        self.assertTrue('a' not in attr_d.__dict__, "Wrong attribute deletion in AttrDict")
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

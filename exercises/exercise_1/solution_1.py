@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-Exercise 1: old-style vs. new-style, classes customization
+Solution exercise 1: old-style vs. new-style, classes customization
 '''
 
 
@@ -14,22 +14,6 @@ class CustomOptionParser(OptionParser, object):
 
 
 class CustomOrderedDict(OrderedDict):
-    def _pair_str(self, i):
-        res = [None, None]
-        if isinstance(i[0], str):
-            res[0] = "'" + i[0] + "'"
-        else:
-            res[0] = str(i[0])
-        if isinstance(i[1], str):
-            res[1] = "'" + i[1] + "'"
-        else:
-            res[1] = str(i[1])
-        return res
-
-    def __str__(self):
-        txt = ", ".join(map(": ".join, map(self._pair_str, self.items())))
-        return"{" +  txt + "}"
-
     def __getitem__(self, key):
         if isinstance(key, slice):
             return self.__class__(self.items()[key])
@@ -44,3 +28,25 @@ class CustomOrderedDict(OrderedDict):
         res = self.__class__(self)
         [res.pop(k, None) for k in other]
         return res
+
+
+class AttrDict(dict):
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError, e:
+            raise AttributeError(e)
+
+    def __setattr__(self, name, value):
+        if name in self:
+            self[name] = value
+        else:
+            # self.__dict__[name] = value  # Perform action instead of delegating
+            dict.__setattr__(self, name, value)
+
+    def __delattr__(self, name):
+        if name in self:
+            del self[name]
+        else:
+            # del self.__dict__[name]  # Perform action instead of delegating
+            dict.__delattr__(self, name)

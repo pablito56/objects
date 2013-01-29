@@ -79,10 +79,7 @@ print lst_inst, '@', id(lst_inst)
 
 # Now let's play with dicts
 dict1 = {(1, 2): "1, 2", (3, 4): "3, 4"}
-try:
-    dict2 = {[1, 2]: "1, 2", [3, 4]: "3, 4"}
-except TypeError, e:
-    print e.__class__.__name__, e
+dict2 = {[1, 2]: "1, 2", [3, 4]: "3, 4"}
 
 
 #===============================================================================
@@ -198,12 +195,16 @@ print input
 ##===============================================================================
 ## TIME TO START WORKING!
 ##
-## EXERCISE 0: Solve common mutable types usage errors:
+## EXERCISE 0:
+## - Solve common mutable / immutable types usage errors
+##
+## INSTRUCTIONS:
 ## - Go to exercices/exercise_0 and edit exercise_0.py
 ## - Change the functions and class implementation to let tests_0.py pass
 ## - Check tests with nosetests
 ##===============================================================================
 ##===============================================================================
+
 
 # Wrong multiple assignment of mutables
 def split_even_odd(numbers):
