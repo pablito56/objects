@@ -345,6 +345,7 @@ class AttrDict(dict):
     def __setattr__(self, name, value):
         '''Called when an attribute assignment is attempted
         '''
+        # self.__setitem__(key, value)
         self[name] = value
 
     def __delattr__(self, name):
@@ -440,7 +441,7 @@ class AttrDict(dict):
             self[name] = value
         else:
             # self.__dict__[name] = value  # Perform action instead of delegating
-            dict.__setattr__(self, name, value)
+            dict.__setattr__(self, name, value)  # Always call the method of an ancestor!
 
     def __delattr__(self, name):
         if name in self:
@@ -456,6 +457,11 @@ ad_inst.a = 0
 del ad_inst.b
 print ad_inst
 print ad_inst.f
+
+#===============================================================================
+# WARNING!
+# - As we will see in next examples, this implementation is wrong
+#===============================================================================
 
 #===============================================================================
 # MORE INFO:
