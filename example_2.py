@@ -359,3 +359,61 @@ d_inst.class_attr
 # - With the old (wrong) MRO would be: D, B, object, C, object!!
 # - With the new one it is: D, B, C, object
 #===============================================================================
+
+
+# Let's go back again to our verbose attribute dict...
+class Verbose(object):
+    def __getattribute__(self, name):
+        print "__getattribute__", name
+        return super(Verbose, self).__getattribute__(name)
+
+    def __getitem__(self, key):
+        print "__getitem__", key
+        return super(Verbose, self).__getitem__(key)
+
+    def __setitem__(self, key, value):
+        print "__setitem__", key, value
+        return super(Verbose, self).__setitem__(key, value)
+
+    def __getattr__(self, name):
+        print "__getattr__", name
+        return super(Verbose, self).__getattr__(name)
+
+    def __setattr__(self, name, value):
+        print "__setattr__", name, value
+        return super(Verbose, self).__setattr__(name, value)
+
+
+class Attr(object):
+    def __getattr__(self, name):
+        try:
+            return super(Attr, self).__getitem__(name)
+        except KeyError, e:
+            raise AttributeError(e)
+
+    def __setattr__(self, name, value):
+        if name in self:
+            super(Attr, self).__setitem__(name, value)
+        else:
+            super(Attr, self).__setattr__(name, value)
+
+    def __delattr__(self, name):
+        if name in self:
+            super(Attr, self).__delitem__(name)
+        else:
+            super(Attr, self).__delattr__(name)
+
+
+# Option 5: exploit cooperative super call with mixins
+class VerboseAttribDict(Verbose, Attr, dict):
+    pass
+
+
+# Let's use this dict
+vd = VerboseAttribDict({'a': 1, 'b': 2})
+vd['c'] = 3
+vd.x = 7
+vd.a = 0
+vd.a
+vd
+VerboseAttribDict.__mro__
