@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-EXAMPLE 2: MOR: super and getattr
+EXAMPLE 2: MRO: super and getattr
 '''
 
 # Let's implement a verbose dict intercepting attribs and items access
@@ -417,3 +417,134 @@ vd.a = 0
 vd.a
 vd
 VerboseAttribDict.__mro__
+
+
+##===============================================================================
+##===============================================================================
+## TIME TO START WORKING!
+##
+## EXERCISE 2:
+## - Implement all needed changes to let the tests pass. In particular, implement AmazingDict:
+##    - Access keys as attributes only if they already exist
+##    - Lower attributes and key names for query or modification
+##    - Convert attributes or keys datetime values to strings when they are modified
+##    - Print all attributes and keys accesses for query or modification
+## - Check: http://docs.python.org/2/reference/datamodel.html?highlight=__contains__#object.__contains__
+##
+## INSTRUCTIONS:
+## - Go to exercices/exercise_2 and edit exercise_2.py
+## - Change the classes implementations to let tests_2.py pass
+## - Check tests executing nosetests
+##===============================================================================
+##===============================================================================
+
+# Solution step 1: implement __contains__ in Lower class
+class Lower(object):
+    def __getattribute__(self, name):
+        return super(Lower, self).__getattribute__(name.lower())
+
+    def __getitem__(self, key):
+        return super(Lower, self).__getitem__(key.lower())
+
+    def __setitem__(self, key, value):
+        if isinstance(value, (str, unicode)):
+            value = value.lower()
+        return super(Lower, self).__setitem__(key.lower(), value)
+
+    def __getattr__(self, name):
+        return super(Lower, self).__getattr__(name.lower())
+
+    def __setattr__(self, name, value):
+        if isinstance(value, (str, unicode)):
+            value = value.lower()
+        return super(Lower, self).__setattr__(name.lower(), value)
+
+    def __contains__(self, item):
+        return super(Lower, self).__contains__(item.lower())
+
+
+# Nothing to do with Attr class implementation
+class Attr(object):
+    '''Access keys as attributes only if they already exist
+    '''
+    def __getattr__(self, name):
+        try:
+            return super(Attr, self).__getitem__(name)
+        except KeyError, e:
+            raise AttributeError(e)
+
+    def __setattr__(self, name, value):
+        if name in self:
+            super(Attr, self).__setitem__(name, value)
+        else:
+            super(Attr, self).__setattr__(name, value)
+
+
+# Solution step 2: make Verbose class inherit from object
+class Verbose(object):
+    '''Print all attributes and keys accesses for query or modification
+    '''
+    def __getattribute__(self, name):
+        print "__getattribute__", name
+        return super(Verbose, self).__getattribute__(name)
+
+    def __getitem__(self, key):
+        print "__getitem__", key
+        return super(Verbose, self).__getitem__(key)
+
+    def __setitem__(self, key, value):
+        print "__setitem__", key, value
+        return super(Verbose, self).__setitem__(key, value)
+
+    def __getattr__(self, name):
+        print "__getattr__", name
+        return super(Verbose, self).__getattr__(name)
+
+    def __setattr__(self, name, value):
+        print "__setattr__", name, value
+        return super(Verbose, self).__setattr__(name, value)
+
+# Nothing to do with DateStr class implementation
+from datetime import datetime
+class DateStr(object):
+    def __setitem__(self, key, value):
+        if isinstance(value, datetime):
+            value = value.isoformat()
+        return super(DateStr, self).__setitem__(key, value)
+
+    def __setattr__(self, name, value):
+        if isinstance(value, datetime):
+            value = value.isoformat()
+        return super(DateStr, self).__setattr__(name, value)
+
+
+# Solution step 2: setup correct order of AmazingDict class ancestorts
+class AmazingDict(Attr, Lower, DateStr, Verbose, dict):
+    pass
+
+
+# Let's check the result
+d = AmazingDict({'id': 1234})
+print d.iD
+
+now = datetime.now()
+d2 = AmazingDict()
+d2['date'] = now
+print d2.date
+
+print type(d2.date)
+
+print d2.date == now.isoformat()
+
+d3 = AmazingDict({'id': 1234})
+print d3
+d3.ID = 1111
+
+print d3
+
+#===============================================================================
+# MORE INFO:
+# - http://docs.python.org/2/library/functions.html#super
+# - http://www.python.org/download/releases/2.2.3/descrintro/#cooperation
+# - http://www.python.org/download/releases/2.2.3/descrintro/#mro
+#===============================================================================

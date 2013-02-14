@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-Test exercise 0: mutable and immutable types common errors
+Test exercise 2: MRO: super and getattr
 '''
 from datetime import datetime 
 import unittest

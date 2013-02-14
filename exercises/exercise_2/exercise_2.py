@@ -6,6 +6,8 @@ from datetime import datetime
 
 
 class Lower(object):
+    '''Lower attributes and key names for query or modification
+    '''
     def __getattribute__(self, name):
         return super(Lower, self).__getattribute__(name.lower())
 
@@ -27,6 +29,8 @@ class Lower(object):
 
 
 class Attr(object):
+    '''Access keys as attributes only if they already exist
+    '''
     def __getattr__(self, name):
         try:
             return super(Attr, self).__getitem__(name)
@@ -41,6 +45,8 @@ class Attr(object):
 
 
 class Verbose():
+    '''Print all attributes and keys accesses for query or modification
+    '''
     def __getattribute__(self, name):
         print "__getattribute__", name
         return super(Verbose, self).__getattribute__(name)
@@ -63,6 +69,8 @@ class Verbose():
 
 
 class DateStr(object):
+    '''Convert attributes or keys datetime values to strings when they are modified
+    '''
     def __setitem__(self, key, value):
         if isinstance(value, datetime):
             value = value.isoformat()
@@ -75,4 +83,10 @@ class DateStr(object):
 
 
 class AmazingDict(DateStr, Lower, dict):
+    '''Dictionary with amazing enhanced behaviour:
+    - Access keys as attributes only if they already exist
+    - Lower attributes and key names for query or modification
+    - Convert attributes or keys datetime values to strings when they are modified
+    - Print all attributes and keys accesses for query or modification
+    '''
     pass
