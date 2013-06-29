@@ -18,6 +18,7 @@ All the course content is written down in Python scripts, designed to be execute
 To execute yourself all the code:
 
 * Create a **virtualenv** (optional):
+
 ```
 me@my_laptop:~/workspace/objects (master)$ virtualenv ~/venvs/objects_essentials -p python2.7
 Running virtualenv with interpreter /usr/bin/python2.7
@@ -28,19 +29,11 @@ me@my_laptop:~/workspace/objects (master)$ source ~/venvs/objects_essentials/bin
 ```
 
 * Install readline with **easy_install**:
+
 ```
 (objects_essentials)me@my_laptop:~/workspace/objects (master)$ easy_install readline
 Searching for readline
-Reading http://pypi.python.org/simple/readline/
-Best match: readline 6.2.4.1
-Downloading http://pypi.python.org/packages/2.7/r/readline/readline-6.2.4.1-py2.7-macosx-10.7-intel.egg#md5=6ede61046a61219a6d97c44a75853c23
-Processing readline-6.2.4.1-py2.7-macosx-10.7-intel.egg
-creating /Users/pev/venvs/objects_essentials/lib/python2.7/site-packages/readline-6.2.4.1-py2.7-macosx-10.7-intel.egg
-Extracting readline-6.2.4.1-py2.7-macosx-10.7-intel.egg to /Users/pev/venvs/objects_essentials/lib/python2.7/site-packages
-Adding readline 6.2.4.1 to easy-install.pth file
-
-Installed /Users/pev/venvs/objects_essentials/lib/python2.7/site-packages/readline-6.2.4.1-py2.7-macosx-10.7-intel.egg
-Processing dependencies for readline
+...
 Finished processing dependencies for readline
 ```
 
@@ -49,38 +42,14 @@ Finished processing dependencies for readline
 ```
 (objects_essentials)me@my_laptop:~/workspace/objects (master)$ pip install -r wspace/objects/requirements.txt
 Downloading/unpacking git+git://github.com/pablito56/pydemo.git (from -r wspace/objects/requirements.txt (line 3))
-  Cloning git://github.com/pablito56/pydemo.git to /var/folders/rv/1ljrf4d94dqbj0qg_3bksqtn3c6f71/T/pip-wHiloB-build
-  Running setup.py egg_info for package from git+git://github.com/pablito56/pydemo.git
-
-Downloading/unpacking Pygments==1.6rc1 (from -r wspace/objects/requirements.txt (line 1))
-  Downloading Pygments-1.6rc1.tar.gz (1.4MB): 1.4MB downloaded
-  Running setup.py egg_info for package Pygments
-
-Downloading/unpacking nose==1.3.0 (from -r wspace/objects/requirements.txt (line 2))
-  Downloading nose-1.3.0.tar.gz (404kB): 404kB downloaded
-  Running setup.py egg_info for package nose
-
-    no previously-included directories found matching 'doc/.build'
-Requirement already satisfied (use --upgrade to upgrade): readline==6.2.4.1 in ./venvs/objects_essentials/lib/python2.7/site-packages/readline-6.2.4.1-py2.7-macosx-10.7-intel.egg (from -r wspace/objects/requirements.txt (line 4))
-Installing collected packages: Pygments, nose, pydemo
-  Running setup.py install for Pygments
-
-    Installing pygmentize script to /Users/pev/venvs/objects_essentials/bin
-  Running setup.py install for nose
-
-    no previously-included directories found matching 'doc/.build'
-    Installing nosetests script to /Users/pev/venvs/objects_essentials/bin
-    Installing nosetests-2.7 script to /Users/pev/venvs/objects_essentials/bin
-  Running setup.py install for pydemo
-
-    Installing pydemo script to /Users/pev/venvs/objects_essentials/bin
+...
 Successfully installed Pygments nose pydemo
 Cleaning up...
 ```
 
 * Execute pydemo console (use `-h` to check its arguments):
 
-```shell
+```
 me@my_laptop:~/workspace/objects (master)$ pydemo
 Loaded 4 files, 238 code blocks
 Python 2.7.2 (default, Oct 11 2012, 20:14:37)
