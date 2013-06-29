@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 u'''
-EXAMPLE 3: creation and instantiation: __new__ and metaclasses
+MODULE 04: creation and instantiation: __new__ and metaclasses
 '''
+
 
 class VerboseCreator(object):
     def __new__(cls, *args, **kwargs):

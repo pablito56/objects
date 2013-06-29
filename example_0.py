@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
-u'''
-EXAMPLE 0: Objects: type, id, value, mutable vs. immutable
-'''
+###
+# MODULE 01: Objects: type, id, value, mutable vs. immutable
+###
 
 
 # Let's instantiate a string and check its id, type and value
@@ -52,7 +52,7 @@ print id(list_inst_1), 'vs.', id(list_inst_2)
 #===============================================================================
 
 
-# Let's check how immutable values are reused 
+# Let's check how immutable values are reused
 sevens = [7, 7, 7, 7, 7]
 print map(id, sevens)
 abcs = ["abc", "abc", "abc", "abc", "abc"]
@@ -105,6 +105,11 @@ print "intA:", intA, '@', id(intA)
 print "intB:", intB, '@', id(intB)
 
 
+#===============================================================================
+# Notice how we are binding a new value (0 + 1) to the same label (intA)
+#===============================================================================
+
+
 # Ok. Multiple assignment with lists (mutable)
 lstA = lstB = []
 print "lstA:", lstA, '@', id(lstA)
@@ -145,6 +150,7 @@ print inst_A.list_inst is inst_B.list_inst
 #===============================================================================
 # Mutable and immutable types common errors:
 # - Multiple assignment
+#    - The same applies with shallow copy or constructor by copy
 # - Class attributes
 #===============================================================================
 
@@ -166,19 +172,19 @@ print result1, 'vs', result2
 # - Multiple assignment
 #    - The same applies with shallow copy or constructor by copy
 # - Class attributes
-# - Functions parameters default value
+# - Functions arguments default value
 #===============================================================================
 
 
-# Let's create a function which accidentally modifies input parameters
+# Let's create a function which accidentally modifies input arguments
 def get_middle_item(input_lst):
     return input_lst.pop(len(input_lst) / 2)
 
 # Let's call this function
-input = range(1, 6)
-print input
-print get_middle_item(input)
-print input
+input_lst = range(1, 6)
+print input_lst
+print get_middle_item(input_lst)
+print input_lst
 
 
 #===============================================================================
@@ -186,8 +192,8 @@ print input
 # - Multiple assignment
 #    - The same applies with shallow copy or constructor by copy
 # - Class attributes
-# - Functions parameters default value
-# - In-place modifications of function's mutable parameters 
+# - Functions arguments default value
+# - In-place modifications of function's mutable arguments
 #===============================================================================
 
 
@@ -310,8 +316,8 @@ print update_even_odd(range(100, 111))
 # - Multiple assignment --> Avoid multiple assignment of mutable types
 #    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy
 # - Class attributes --> Instantiate in the __init__
-# - Functions parameters default value --> Use None as default value and instantiate inside the function
-# - In-place modifications of function's mutable parameters --> Avoid it. Keep in mind waht you are doing 
+# - Functions arguments default value --> Use None as default value and instantiate inside the function
+# - In-place modifications of function's mutable arguments --> Avoid it. Keep in mind what you are doing
 #===============================================================================
 
 #===============================================================================

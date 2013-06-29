@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-EXAMPLE 1: Classes: new-style vs. old-style, data model & customization
+MODULE 02: Classes: new-style vs. old-style, data model & customization
 '''
 
 

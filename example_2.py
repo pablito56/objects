@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 u'''
-EXAMPLE 2: MRO: super and getattr
+MODULE 03: MRO: super and getattr
 '''
+
 
 # Let's implement a verbose dict intercepting attribs and items access
 class VerboseDict(dict):
