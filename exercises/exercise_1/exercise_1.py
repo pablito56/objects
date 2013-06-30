@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-Exercise 0: mutable and immutable types common errors
+Exercise 1: mutable and immutable types common errors
 '''
 
 

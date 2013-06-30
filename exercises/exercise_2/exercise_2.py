@@ -24,7 +24,7 @@ class AttrDict(dict):
         '''
         try:
             return self[name]
-        except KeyError, e:
+        except KeyError as e:
             raise AttributeError(e)
 
     def __setattr__(self, name, value):

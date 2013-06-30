@@ -386,7 +386,7 @@ print attr_d
 ## INSTRUCTIONS:
 ## - Go to exercices/exercise_2 and edit exercise_2.py
 ## - Change the functions and class implementation to let tests_2.py pass
-## - Check tests with nosetests
+## - Check tests executing 'nosetests -sv'
 ##===============================================================================
 ##===============================================================================
 

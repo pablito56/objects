@@ -435,7 +435,7 @@ VerboseAttribDict.__mro__
 ## INSTRUCTIONS:
 ## - Go to exercices/exercise_3 and edit exercise_3.py
 ## - Change the classes implementations to let tests_3.py pass
-## - Check tests executing nosetests
+## - Check tests executing 'nosetests -sv'
 ##===============================================================================
 ##===============================================================================
 

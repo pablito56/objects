@@ -1,11 +1,11 @@
 #-*- coding: utf-8 -*-
 u'''
-Test exercise 2: MRO: super and getattr
+Test exercise 3: MRO: super and getattr
 '''
-from datetime import datetime 
+from datetime import datetime
 import unittest
-import exercise_2 as src
-# import solution_2 as src
+import exercise_3 as src
+# import solution_3 as src
 
 
 class VerboseTestCase(unittest.TestCase):

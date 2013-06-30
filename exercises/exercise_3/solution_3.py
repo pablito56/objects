@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 u'''
-Solution exercise 2: MRO: super and getattr
+Solution exercise 3: MRO: super and getattr
 '''
 from datetime import datetime
 
