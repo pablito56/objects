@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
-u'''
-MODULE 04: creation and instantiation: __new__ and metaclasses
-'''
+###
+# MODULE 04: creation and instantiation: __new__ and metaclasses
+###
 
 
 class VerboseCreator(object):
@@ -63,7 +63,7 @@ print RoundedFloat(7.12345)
 #   - Singleton pattern, although the most recommended implementation is using a module
 #   - Factory pattern, although we are gonna see a better solution
 #   - When subclassing immutable types, to customize the instance creation
-#   - In custom metaclasses in order to customize class creation
+#   - In custom metaclasses in order to customise class creation
 #===============================================================================
 
 

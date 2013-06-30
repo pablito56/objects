@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
-u'''
-MODULE 03: MRO: super and getattr
-'''
+###
+# MODULE 03: MRO: super and getattr
+###
 
 
 # Let's implement a verbose dict intercepting attribs and items access
@@ -433,8 +433,8 @@ VerboseAttribDict.__mro__
 ## - Check: http://docs.python.org/2/reference/datamodel.html?highlight=__contains__#object.__contains__
 ##
 ## INSTRUCTIONS:
-## - Go to exercices/exercise_2 and edit exercise_2.py
-## - Change the classes implementations to let tests_2.py pass
+## - Go to exercices/exercise_3 and edit exercise_3.py
+## - Change the classes implementations to let tests_3.py pass
 ## - Check tests executing nosetests
 ##===============================================================================
 ##===============================================================================

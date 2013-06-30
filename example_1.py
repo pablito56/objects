@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
-u'''
-MODULE 02: Classes: new-style vs. old-style, data model & customization
-'''
+###
+# MODULE 02: Classes: new-style vs. old-style, data model & customization
+###
 
 
 # Let's create an old-style class
@@ -44,6 +44,7 @@ class MyNewOldClass(MyOldClass):
 
 new_old_inst = MyNewOldClass()
 new_old_inst.print_instance_class()
+
 
 # Let's inherit from an old-style class
 class MyGoodNewOldClass(MyOldClass, object):
@@ -383,8 +384,8 @@ print attr_d
 ## - http://docs.python.org/2.7/reference/datamodel.html
 ##
 ## INSTRUCTIONS:
-## - Go to exercices/exercise_1 and edit exercise_1.py
-## - Change the functions and class implementation to let tests_1.py pass
+## - Go to exercices/exercise_2 and edit exercise_2.py
+## - Change the functions and class implementation to let tests_2.py pass
 ## - Check tests with nosetests
 ##===============================================================================
 ##===============================================================================
@@ -395,6 +396,7 @@ from optparse import OptionParser
 class CustomOptionParser(OptionParser):
     def __str__(self):
         return self.__class__.__name__
+
 
 # Right old-style class inheritance
 class CustomOptionParser(OptionParser, object):
@@ -460,7 +462,7 @@ print ad_inst.f
 
 #===============================================================================
 # WARNING!
-# - As we will see in next examples, this implementation is wrong
+# - As we will see in next examples, this implementation can be improved
 #===============================================================================
 
 #===============================================================================

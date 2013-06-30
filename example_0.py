@@ -4,36 +4,46 @@
 ###
 
 
-# Let's instantiate a string and check its id, type and value
+# Let's instantiate a string and check its identity, type and value
 str_inst = 'abcd'
-print id(str_inst)
-print type(str_inst)
-print str_inst
+print "identity:", id(str_inst)
+print "type:", type(str_inst)
+print "value:", str_inst
+
+# Let's compare its id
+print str_inst is 'abcd'
 
 
-# Let's compare the ids of two bool values
-bool_inst_1 = True
-bool_inst_2 = True
-print bool_inst_1 is bool_inst_2
-print bool_inst_1 is True
+# What happened here?
+
+
+# Let's compare the ids of two int values
+int_inst_1 = 7
+int_inst_2 = 7
+print int_inst_1 is int_inst_2
+print int_inst_1 is 7
+print id(int_inst_1), 'vs.', id(int_inst_2)
 
 
 #===============================================================================
-# - Every object has an identity (its address), a type and a value
-# - Use 'id' and 'is' to retrieve or compare the id of an object
-# - The interpreter may reuse values
+# - Every object has an identity (its address up to now), a type and a value
+# - Both id and type are unchangeable
+# - Use 'id' builtin function to retrieve the id of an object
+# - Use 'is' operator to compare the id of two objects
+# - The interpreter may reuse objects for different labels
 #===============================================================================
 
 
 # Let's do the same with lists
 lst_inst = []
 print lst_inst is []
+print id(lst_inst), 'vs.', id([])
 
 
-# WTF!? Let's try again with ints
-int_inst_1 = 7
-int_inst_2 = 7
-print id(int_inst_1), 'vs.', id(int_inst_2)
+# What!? Let's try again with bools
+bool_inst_1 = True
+bool_inst_2 = True
+print id(bool_inst_1), 'vs.', id(bool_inst_2)
 
 # Ok. Let's try again with other types
 none_inst = None
@@ -90,6 +100,7 @@ dict2 = {[1, 2]: "1, 2", [3, 4]: "3, 4"}
 #===============================================================================
 # WARNING!
 # - Mutable and immutable types behavior differences can lead to some common errors!!
+#    - Though sometimes it is the desired behaviour
 #===============================================================================
 
 
@@ -105,9 +116,7 @@ print "intA:", intA, '@', id(intA)
 print "intB:", intB, '@', id(intB)
 
 
-#===============================================================================
 # Notice how we are binding a new value (0 + 1) to the same label (intA)
-#===============================================================================
 
 
 # Ok. Multiple assignment with lists (mutable)
@@ -116,20 +125,66 @@ print "lstA:", lstA, '@', id(lstA)
 print "lstB:", lstB, '@', id(lstB)
 
 
-# Let's modify one of the lists
+# Let's modify (in-place) one of the lists
 lstA.extend([1, 2, 3])
+
+# What do you expect to be lstB?
+
 print "lstA:", lstA, '@', id(lstA)
 print "lstB:", lstB, '@', id(lstB)
 
 
 #===============================================================================
 # Mutable and immutable types common errors:
+#
+# - Multiple assignments
+#===============================================================================
+
+
+# Name binding or shallow copy with immutables might lead to error too
+initial_list = [2, 3, 5]
+
+new_list = initial_list
+for idx in range(len(new_list)):
+    new_list[idx] = new_list[idx] ** 2
+
+print "new_list:", new_list
+
+# What do you expect to be initial_list?
+
+print "initial_list:", initial_list
+
+
+# And the same happens with constructor by copy
+initial_dict = {"ones": [1, 1, 1], "twos": [2, 2, 2]}
+
+upper_dict = dict(initial_dict)
+for key in upper_dict:
+    upper_dict[key.upper()] = upper_dict.pop(key)
+print "upper_dict:", upper_dict
+
+# What do you expect to be initial_dict?
+
+print "initial_dict:", initial_dict
+
+# Looks good
+
+upper_dict["TWOS"].append(7)
+
+# And now?
+
+print "initial_dict:", initial_dict
+
+
+#===============================================================================
+# Mutable and immutable types common errors:
+#
 # - Multiple assignments
 #    - The same applies with shallow copy or constructor by copy
 #===============================================================================
 
 
-# Use mutable types as class attributes
+# Use of mutable types as class attributes
 class MutablesClass(object):
     list_inst = []
     int_inst = 0
@@ -142,36 +197,57 @@ inst_B = MutablesClass()
 # Let's change one of the instances and check the other instance values
 inst_A.int_inst += 1
 inst_A.list_inst.extend([5, 7, 9])
+print "inst_A.int_inst:", inst_A.int_inst
+print "inst_A.list_inst:", inst_A.list_inst
+
+# What do you expect to have inst_B?
+
 print "inst_B.int_inst:", inst_B.int_inst
 print "inst_B.list_inst:", inst_B.list_inst
+
 print inst_A.list_inst is inst_B.list_inst
+
+print MutablesClass.list_inst
+
+# Class arguments are stored in the class and created on import time
 
 
 #===============================================================================
 # Mutable and immutable types common errors:
+#
 # - Multiple assignment
 #    - The same applies with shallow copy or constructor by copy
+#
 # - Class attributes
 #===============================================================================
 
 
-# Let's create a function which returns a modified list
-def add_to_list(item, lst=[]):
-    lst.append(item)
-    return lst
+# Let's implement a function to add the power of a number to a list
+def add_power_to_list(item, powers_lst=[]):
+    powers_lst.append(item ** 2)
+    return powers_lst
 
-# Let's call this function twice
-result1 = add_to_list(1)
-result2 = add_to_list(2)
+# Let's call this function
+result1 = add_power_to_list(2)
+print result1
+
+# Let's call the function again
+result2 = add_power_to_list(3)
+
 print result1 is result2
 print result1, 'vs', result2
 
+print add_power_to_list.func_defaults
+
 
 #===============================================================================
 # Mutable and immutable types common errors:
+#
 # - Multiple assignment
 #    - The same applies with shallow copy or constructor by copy
+#
 # - Class attributes
+#
 # - Functions arguments default value
 #===============================================================================
 
@@ -189,11 +265,15 @@ print input_lst
 
 #===============================================================================
 # Mutable and immutable types common errors:
+#
 # - Multiple assignment
 #    - The same applies with shallow copy or constructor by copy
+#
 # - Class attributes
+#
 # - Functions arguments default value
-# - In-place modifications of function's mutable arguments
+#
+# - In-place modification of function's mutable arguments
 #===============================================================================
 
 
@@ -205,8 +285,8 @@ print input_lst
 ## - Solve common mutable / immutable types usage errors
 ##
 ## INSTRUCTIONS:
-## - Go to exercices/exercise_0 and edit exercise_0.py
-## - Change the functions and class implementation to let tests_0.py pass
+## - Go to exercices/exercise_1 and edit exercise_1.py
+## - Change the functions and class implementation to let tests_1.py pass
 ## - Check tests with nosetests
 ##===============================================================================
 ##===============================================================================
@@ -313,14 +393,21 @@ print update_even_odd(range(100, 111))
 
 #===============================================================================
 # To sum up, mutable and immutable types common errors and solution:
+#
 # - Multiple assignment --> Avoid multiple assignment of mutable types
 #    - The same applies with shallow copy or constructor by copy --> Use copy.deepcopy
+#
 # - Class attributes --> Instantiate in the __init__
+#
 # - Functions arguments default value --> Use None as default value and instantiate inside the function
-# - In-place modifications of function's mutable arguments --> Avoid it. Keep in mind what you are doing
+#
+# - In-place modification of function's mutable arguments --> Avoid it. Keep in mind what you are doing
 #===============================================================================
 
 #===============================================================================
 # MORE INFO:
 # - http://docs.python.org/2.7/reference/datamodel.html#objects-values-and-types
+# - http://docs.python.org/2/reference/executionmodel.html#naming-and-binding
+# - http://docs.python.org/2/library/copy.html#copy.deepcopy
+# - http://www.pythontutor.com/visualize.html
 #===============================================================================

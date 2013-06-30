@@ -50,7 +50,7 @@ Cleaning up...
 * Execute pydemo console (use `-h` to check its arguments):
 
 ```
-me@my_laptop:~/workspace/objects (master)$ pydemo
+(objects_essentials)me@my_laptop:~/workspace/objects (master)$ pydemo
 Loaded 4 files, 238 code blocks
 Python 2.7.2 (default, Oct 11 2012, 20:14:37)
 [GCC 4.2.1 Compatible Apple Clang 4.0 (tags/Apple/clang-418.0.60)] on darwin
