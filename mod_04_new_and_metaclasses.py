@@ -155,7 +155,9 @@ class TrueFalseClass(object):
     def ret_true(self, *args, **kwargs):
         return True
 
+
 tf_inst = TrueFalseClass()
+
 tf_inst.ret_true()
 
 tf_inst.ret_false()
@@ -172,6 +174,23 @@ tf_inst.ret_false(1, "xyz", arg1=7)
 #    - Timing or profiling
 #    - Caching
 #    - ...
+#===============================================================================
+
+
+#===============================================================================
+# __new__
+#    - Intercepts instances creation
+#    - Executed on instantiation time
+#    - Affects instances one by one
+#
+# __metaclass__
+#    - Intercepts class creation
+#    - Executed on import time
+#    - Affects all instances at once
+#===============================================================================
+
+
+#===============================================================================
 # More info:
 # - http://docs.python.org/2/reference/datamodel.html#customizing-class-creation
 # - http://www.voidspace.org.uk/python/articles/metaclasses.shtml
