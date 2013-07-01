@@ -174,6 +174,8 @@ tf_inst.ret_false(1, "xyz", arg1=7)
 #    - Timing or profiling
 #    - Caching
 #    - ...
+#
+# - It can be specified system-wide with a global variable '__metaclass__'
 #===============================================================================
 
 
