@@ -101,6 +101,7 @@ vd
 # - super(type[, object-or-type])
 #    - Typically: super(CurrentClass, self).current_method(*current_args, **current_kwargs)
 # - Returns a proxy object that delegates method calls to a parent or sibling class of type.
+#    - Arguments are optional in Py3k
 #
 # - http://docs.python.org/2/library/functions.html#super 
 #===============================================================================
@@ -424,7 +425,7 @@ VerboseAttribDict.__mro__
 ##===============================================================================
 ## TIME TO START WORKING!
 ##
-## EXERCISE 2:
+## EXERCISE 3:
 ## - Implement all needed changes to let the tests pass. In particular, implement AmazingDict:
 ##    - Access keys as attributes only if they already exist
 ##    - Lower attributes and key names for query or modification

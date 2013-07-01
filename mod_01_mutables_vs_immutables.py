@@ -10,7 +10,7 @@ print "identity:", id(str_inst)
 print "type:", type(str_inst)
 print "value:", str_inst
 
-# Let's compare its id
+# Let's use the 'is' operator
 print str_inst is 'abcd'
 
 
@@ -25,12 +25,17 @@ print int_inst_1 is 7
 print id(int_inst_1), 'vs.', id(int_inst_2)
 
 
+# Why both have the same id?
+
+
 #===============================================================================
 # - Every object has an identity (its address up to now), a type and a value
 # - Both id and type are unchangeable
-# - Use 'id' builtin function to retrieve the id of an object
+# - Use 'id' function to retrieve the id of an object
+# - Use 'type' function to retrieve the type of an object
+#    - Remeber to be Pythonic (Duck Typing, EAFP...)
 # - Use 'is' operator to compare the id of two objects
-# - The interpreter may reuse objects for different labels
+# - The interpreter may reuse objects binding them to different labels
 #===============================================================================
 
 
@@ -45,55 +50,79 @@ bool_inst_1 = True
 bool_inst_2 = True
 print id(bool_inst_1), 'vs.', id(bool_inst_2)
 
-# Ok. Let's try again with other types
+# Ok. Let's try with other types
 none_inst = None
 print id(none_inst), 'vs.', id(None)
+
+# 'None' is a constant and is the only accepted value of types.NoneType
 
 list_inst_1 = []
 list_inst_2 = []
 print id(list_inst_1), 'vs.', id(list_inst_2)
 
 
+# Why it does not work with lists?
+
+
 #===============================================================================
-# - Objects whose value can change are said to be mutable (dicts, lists)
-# - Objects whose value is unchangeable once they are created are called immutable (numbers, strings, tuples)
+# - Objects whose value can change are said to be mutable
+#    - dicts, lists
+# - Objects whose value is unchangeable once they are created are called immutable
+#    - numbers, strings, tuples, NoneType
 # - Mutable types allow in-place modifications (append in a list, pop in a dictionary...)
-# - Immutable types values may be reused by the interpreter (so their id is the same)
+# - Immutable types instances may be reused by the interpreter (so their id is the same)
 #===============================================================================
 
 
-# Let's check how immutable values are reused
+# Let's check how immutables are reused
 sevens = [7, 7, 7, 7, 7]
 print map(id, sevens)
-abcs = ["abc", "abc", "abc", "abc", "abc"]
-print map(id, abcs)
-tuples = [(), (), ()]
-print map(id, tuples)
-lists = [[], [], []]
-print map(id, lists)
+
+abcds = ["abcd", "abcd", "abcd", "abcd", "abcd"]
+print map(id, abcds)
+
+empty_tuples = [(), (), ()]
+print map(id, empty_tuples)
+
+empty_lists = [[], [], []]
+print map(id, empty_lists)
+
+empty_dicts = [{}, {}, {}]
+print map(id, empty_dicts)
+
+seven_tuples = [(7,), (7,), (7,)]
+print map(id, seven_tuples)
 
 
-# Let's change a string value (reassign!)
+# Best effort: it is not possible to reuse absolutely everything
+
+
+# Let's change a string value
 str_inst = 'instance value'
 print str_inst, '@', id(str_inst)
+
+# Reassign
 str_inst = str_inst + ' updated'
 print str_inst, '@', id(str_inst)
 
 
-# Let's change a list content (in-place modification!)
+# Let's change a list content
 lst_inst = ['instance', 'value']
 print lst_inst, '@', id(lst_inst)
+
+# In-place modification
 lst_inst.append('updated')
 print lst_inst, '@', id(lst_inst)
 
 
 # Now let's play with dicts
 dict1 = {(1, 2): "1, 2", (3, 4): "3, 4"}
+
 dict2 = {[1, 2]: "1, 2", [3, 4]: "3, 4"}
 
 
 #===============================================================================
-# - Mutable types are not stable, so they can not be used as dict keys
+# - Mutable types are not stable, so they can not be hashed
 #===============================================================================
 
 
@@ -161,6 +190,7 @@ initial_dict = {"ones": [1, 1, 1], "twos": [2, 2, 2]}
 upper_dict = dict(initial_dict)
 for key in upper_dict:
     upper_dict[key.upper()] = upper_dict.pop(key)
+
 print "upper_dict:", upper_dict
 
 # What do you expect to be initial_dict?
@@ -194,7 +224,7 @@ inst_A = MutablesClass()
 inst_B = MutablesClass()
 
 
-# Let's change one of the instances and check the other instance values
+# Let's change one of the instances
 inst_A.int_inst += 1
 inst_A.list_inst.extend([5, 7, 9])
 print "inst_A.int_inst:", inst_A.int_inst
@@ -231,13 +261,17 @@ def add_power_to_list(item, powers_lst=[]):
 result1 = add_power_to_list(2)
 print result1
 
-# Let's call the function again
+# Let's call the function again with a different argument
 result2 = add_power_to_list(3)
 
-print result1 is result2
+# What do you expect to be result2?
+
 print result1, 'vs', result2
+print result1 is result2
 
 print add_power_to_list.func_defaults
+
+# Functions default values are stored in the function object and created on import time
 
 
 #===============================================================================
@@ -252,14 +286,18 @@ print add_power_to_list.func_defaults
 #===============================================================================
 
 
-# Let's create a function which accidentally modifies input arguments
+# Let's create a function which returns the middle value of a list
 def get_middle_item(input_lst):
     return input_lst.pop(len(input_lst) / 2)
 
 # Let's call this function
 input_lst = range(1, 6)
 print input_lst
+
 print get_middle_item(input_lst)
+
+# What do you expect to be input_lst?
+
 print input_lst
 
 
@@ -281,7 +319,7 @@ print input_lst
 ##===============================================================================
 ## TIME TO START WORKING!
 ##
-## EXERCISE 0:
+## EXERCISE 1:
 ## - Solve common mutable / immutable types usage errors
 ##
 ## INSTRUCTIONS:
@@ -353,8 +391,10 @@ class NumbersList(object):
 
 num_lst_A = NumbersList()
 num_lst_A.append_number(7)
+
 num_lst_B = NumbersList()
-print num_lst_B.even, num_lst_B.odd
+print "num_lst_B.even:", num_lst_B.even
+print "num_lst_B.odd:", num_lst_B.odd
 
 
 # Wrong mutable as function default value

@@ -4,7 +4,7 @@
 ###
 
 
-# Let's create an old-style class
+# Let's create a class
 class MyOldClass:
     def print_instance_class(self):
         print type(self)
@@ -14,7 +14,10 @@ old_inst = MyOldClass()
 old_inst.print_instance_class()
 
 
-# Let's create an identical new-style class
+# It looks incoherent. Why?
+
+
+# Let's create a new-style class
 class MyNewClass(object):
     def print_instance_class(self):
         print type(self)
@@ -30,7 +33,7 @@ new_inst.print_instance_class()
 # - Other benefits: subclass most built-in types, descriptors (slots, properties, static and class methods)...
 # - By default all classes are old-style until Python 3
 #    - In Python 2 you have to inherit from 'object' to use new-style
-#    - You should avoid old-style
+#    - You must avoid old-style
 #
 # - Other changes introduced Python 2.2: __new__, new dir() behavior, metaclasses, new MRO (also in 2.3)
 #
@@ -46,7 +49,7 @@ new_old_inst = MyNewOldClass()
 new_old_inst.print_instance_class()
 
 
-# Let's inherit from an old-style class
+# Let's inherit from an old-style class and 'object'
 class MyGoodNewOldClass(MyOldClass, object):
     pass
 
@@ -55,7 +58,7 @@ good_new_old_inst.print_instance_class()
 
 
 #===============================================================================
-# - You can inherit from both old-style classes and 'object' to have new-style classes
+# - You should inherit from both old-style classes and 'object' to have new-style classes
 #===============================================================================
 
 
@@ -71,7 +74,10 @@ print fract1
 print repr(fract1)
 
 
-# Let's customize our class representation
+# <__console__.MyFraction object at 0xWHATEVER> does not look useful, right?
+
+
+# Let's customise our class representation
 class MyFraction(object):
     def __init__(self, numerator, denominator):
         self.num = int(numerator)
@@ -96,7 +102,7 @@ print repr(fract1)
 
 
 #===============================================================================
-# - There are special method names to customize your classes behavior
+# - There are special method names to customise your classes behavior
 # - Python invokes these methods (if present) when special syntax is executed
 #    - Instatiation and object creation
 #    - Representation
@@ -111,7 +117,7 @@ print repr(fract1)
 #===============================================================================
 
 
-# Let's customize our class rich comparison
+# Let's customise our class rich comparison
 class MyFraction(object):
     def __init__(self, numerator, denominator):
         self.num = int(numerator)
@@ -166,16 +172,17 @@ print fract2 >= fract3  # 1.5 >= 2.5
 
 # Let's try with other types
 print fract1 >= 2  # 2.5 >= 2
-print fract2 == 1.5  # 1.5 == 1.5
+print fract2 != 1.5  # 1.5 != 1.5
 
 # Let's try the other way with other types
 print 2 <= fract1  # 2 <= 2.5
-print 1.5 == fract2   # 1.5 == 1.5
+print 1.5 != fract2   # 1.5 != 1.5
 
 
 #===============================================================================
 # - You don't have to define all the possible methods, Python can take the opposite
-# - Python will try the opposite when a comparison method of a type raises TypeError
+#    - Python will try the opposite when a comparison method of a type raises TypeError
+#    - Python 2.X could try to coerce, but this behaviour has been removed in Py3k
 # - It's up to you to implement compatibility with other types
 #===============================================================================
 
@@ -242,9 +249,9 @@ print fract1 > 10  # 2.5 > 10
 
 #===============================================================================
 # - You don't have to define all the possible methods, Python can take the opposite
-#    - But you should do it to support other types!!
-#    - You can also define __cmp__ (invoked if no other methods defined)
-# - Python will try the opposite when a comparison method of a type raises TypeError
+#    - But you should do it to fully support other types!!
+#    - Python will try the opposite when a comparison method of a type raises TypeError
+#    - Python 2.X could try to coerce, but this behaviour has been removed in Py3k
 # - It's up to you to implement compatibility with other types
 #===============================================================================
 
@@ -287,6 +294,7 @@ class MyFraction(object):
 f1 = MyFraction(7, 2)
 print len(f1)
 print f1['num'], "/", f1[1]
+
 f1[0] = 5
 f1['den'] = 3
 print f1
@@ -318,12 +326,14 @@ class MyFraction(object):
         except AttributeError:
             return MyFraction(self.num + other * self.den, self.den)
 
-    __radd__ = __add__
+    __radd__ = __add__  # Reverse addition implementation: other + self
 
 fract1 = MyFraction(5, 3)
 fract2 = MyFraction(2, 3)
 print fract1 + fract2
+
 print fract1 + 5
+
 print 3 + fract1
 
 
@@ -333,10 +343,10 @@ print 3 + fract1
 #===============================================================================
 
 
-# Let's customize dicts
+# Let's customise dicts
 class AttrDict(dict):
     def __getattr__(self, name):
-        '''Called when an attribute lookup has not found the attribute in the usual places
+        '''Called when an attribute lookup has NOT FOUND the attribute in the usual places
         '''
         try:
             return self[name]
@@ -357,15 +367,17 @@ class AttrDict(dict):
 d = dict(zip("abcde", range(1, 6)))
 attr_d = AttrDict(d)
 print attr_d
+
 attr_d.f = 6
 print attr_d.f
 print attr_d
+
 del attr_d.f
 print attr_d
 
 
 #===============================================================================
-# - Thanks to new-style classes you can customize basic types
+# - Thanks to new-style classes you can customise basic types
 #    - Be careful!
 #
 # More info on emulating container types:
@@ -373,11 +385,37 @@ print attr_d
 #===============================================================================
 
 
+#===============================================================================
+# - And still more customisation methods:
+#
+#    - Hashing (i.e. use as dict key) and truth value testing
+#        - __hash__ and __nonzero__
+#
+#    - Objects copy and deepcopy
+#        - __copy__ and __deepcopy__
+#
+#    - Slicing
+#        - __getslice__ (deprecated by __getitem__), __setslice__
+#
+#    - Iterator protocol
+#        - __iter__, __reversed__, next
+#
+#    - Context managers emulation
+#        - __enter__, __exit__
+#
+#    - Callable objects
+#        - __call__
+#
+#    - Descriptors and slots
+#        - __get__, __set__, __delete__, __slots__
+#===============================================================================
+
+
 ##===============================================================================
 ##===============================================================================
 ## TIME TO START WORKING!
 ##
-## EXERCISE 1:
+## EXERCISE 2:
 ## - Solve old-style class inheritance issue in CustomOptionParser
 ## - Implement slicing and + and - operators in CustomOrderedDict
 ## - Modify AttrDict to access the dictionary only if key already exists (otherwise act as normal attributes)
