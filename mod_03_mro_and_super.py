@@ -30,14 +30,17 @@ class VerboseDict(dict):
 # Let's try it
 vd = VerboseDict({'a': 1, 'b': 2})
 vd['c'] = 3
+
 vd.x = 7
 vd.a = 0
+
 vd.a
+
 vd
 
 
 #===============================================================================
-# What if we want to mix this behavior with our AttrDict?
+# What if we want to merge this behavior with our AttrDict?
 #===============================================================================
 
 class AttrDict(dict):
@@ -61,11 +64,11 @@ class AttrDict(dict):
 
 
 # Option 1: new class inheriting from both
-class VerboseAttribDict(VerboseDict, AttrDict):
+class VerboseAttrDict(VerboseDict, AttrDict):
     pass
 
 # Let's use this dict
-vd = VerboseAttribDict({'a': 1, 'b': 2})
+vd = VerboseAttrDict({'a': 1, 'b': 2})
 vd['c'] = 3
 vd.x = 7
 vd.a = 0
@@ -74,40 +77,40 @@ vd
 
 
 # Option 2: new class inheriting from both (change the order)
-class VerboseAttribDict(AttrDict, VerboseDict):
+class VerboseAttrDict(AttrDict, VerboseDict):
     pass
 
 # Let's use this dict
-vd = VerboseAttribDict({'a': 1, 'b': 2})
+vd = VerboseAttrDict({'a': 1, 'b': 2})
 vd['c'] = 3
 vd.x = 7
 vd.a = 0
 vd.a
 vd
 
-#===============================================================================
-# WARNING!
-# - Ancestors (superclasses) order when inheriting matters!
-#===============================================================================
+# Notice how ancestors (superclasses) order when inheriting matters!
 
 
-# Option 3: implement new class with both verbose and attrib behavior --> new code
-# Option 4: change VerboseDict to inherit from AttribDict --> change code to call right ancestor
+# Option 3: implement new class with both verbose and attr behavior --> new code
+
+# Option 4: change VerboseDict to inherit from AttrDict --> change code to call the right ancestor
+
 # ...
 
 
 #===============================================================================
-# The solution is 'super' and cooperative methods!!
+# The solution is 'super' and cooperative methods
 # - super(type[, object-or-type])
 #    - Typically: super(CurrentClass, self).current_method(*current_args, **current_kwargs)
-# - Returns a proxy object that delegates method calls to a parent or sibling class of type.
-#    - Arguments are optional in Py3k
+# - Returns a proxy object that delegates method calls to a parent or sibling class of 'type'.
+# - Only works for new-style classes
+# - Arguments are optional in Py3k
 #
-# - http://docs.python.org/2/library/functions.html#super 
+# - http://docs.python.org/2/library/functions.html#super
 #===============================================================================
 
 
-# Let's implement verbose dict with super 
+# Let's implement verbose dict with super
 class VerboseDict(dict):
     def __getattribute__(self, name):
         print "__getattribute__", name
@@ -128,6 +131,7 @@ class VerboseDict(dict):
     def __setattr__(self, name, value):
         print "__setattr__", name, value
         return super(VerboseDict, self).__setattr__(name, value)
+
 
 # Let's implement attribs dict with super
 class AttrDict(dict):
@@ -153,19 +157,23 @@ class AttrDict(dict):
 
 
 # Option 1: new class inheriting from both... wiht super!!
-class VerboseAttribDict(VerboseDict, AttrDict):
+class VerboseAttrDict(VerboseDict, AttrDict):
     pass
 
 # Let's use this dict
-vd = VerboseAttribDict({'a': 1, 'b': 2})
+vd = VerboseAttrDict({'a': 1, 'b': 2})
 vd['c'] = 3
+
 vd.x = 7
+
 vd.a = 0
-vd.a
-vd
+
+print vd.a
+
+print vd
 
 
-# Option 4: change VerboseDict to inherit from AttribDict --> with super no changes are required 
+# Option 4: change VerboseDict to inherit from AttrDict --> with super no changes are required 
 class VerboseDict(AttrDict):
     def __getattribute__(self, name):
         print "__getattribute__", name
@@ -208,26 +216,26 @@ vd
 
 # Let's see in detail how super and MRO work
 class A(object):
-    def meth(self):
+    def method(self):
         print type(self), "A's method"
 
 
 class B(A):
-    def meth(self):
+    def method(self):
         print type(self), "B's method"
-        super(B, self).meth()
+        super(B, self).method()
 
 
 class C(A):
-    def meth(self):
+    def method(self):
         print type(self), "C's method"
-        super(C, self).meth()
+        super(C, self).method()
 
 
 class D(B, C):
-    def meth(self):
+    def method(self):
         print type(self), "D's method"
-        super(D, self).meth()
+        super(D, self).method()
 
 #==============================================================================
 # We have a diamond inheritance schema:
@@ -242,31 +250,31 @@ class D(B, C):
 
 # Let's instantiate D and call the method
 d_inst = D()
-d_inst.meth()
+d_inst.method()
 
 
 # Another example
 class A2(object):
-    def meth(self):
+    def method(self):
         print type(self), "A2's method"
 
 
 class C2(A2):
-    def meth(self):
+    def method(self):
         print type(self), "C2's method"
-        super(C2, self).meth()
+        super(C2, self).method()
 
 
 class B2(C2):
-    def meth(self):
+    def method(self):
         print type(self), "B2's method"
-        super(B2, self).meth()
+        super(B2, self).method()
 
 
 class D2(B2):
-    def meth(self):
+    def method(self):
         print type(self), "D2's method"
-        super(D2, self).meth()
+        super(D2, self).method()
 
 #==============================================================================
 # We have a linear inheritance schema:
@@ -281,9 +289,9 @@ class D2(B2):
 #==============================================================================
 
 
-# Let's instantiate D and call the method again
+# Let's instantiate D2 and call the method again
 d_inst = D2()
-d_inst.meth()
+d_inst.method()
 
 
 # Let's check its Method Resolution Order (MRO)
@@ -291,19 +299,29 @@ print D.__mro__
 print D2.__mro__
 
 #===============================================================================
-# Let's see it step by step:
+# Let's see how 'super' works step by step:
 #
-# 1- In D's meth, super(D, self).meth() will find and call B.meth(self), since B is the first base class following D in D.__mro__ that defines meth.
-#    - If meth was not defined in B the process would continue to next base class.
-# 2- In B.meth, super(B, self).meth() is called. Since self is a D instance, the MRO is (D, B, C, A, object) but given that we are in B, the next base class is C.
-# 3- In C again meth is declared so it is called, and in turn it calls super(C, self).meth().
-# 4- Still using the same MRO, we see that the class following C is A, so A.meth is called. No super call is made at this point and the cahon of invocations finishes.
+# 0- The MRO is always obtained from the class of 'self'
+#
+# 1- In D's method, super(D, self).method() will find and call B.method(self),
+#    since B is the first base class following D in D.__mro__ which defines method.
+#        - If method was not defined in B the process would continue to next base class.
+#
+# 2- In B.method, super(B, self).method() is called. Since self is a D instance,
+#    the MRO is (D, B, C, A, object) but as we are in B, the next base class is C.
+#
+# 3- In C again method is declared so it is called, and in turn it calls super(C, self).method().
+#
+# 4- Still using the same MRO, we see that the class following C is A, so A.method is called.
+#    No super call is made at this point and the chain of invocations finishes.
 #===============================================================================
 
 
 #===============================================================================
-# - This process ensures that all ancestors of a class are always inspected before the ancestors of its ancestors
-# - The same process applies when a class declaration is empty, like our fist implementation of VerboseAttribDict
+# - This process ensures that all ancestors of a class are always inspected
+#    before the ancestors of its ancestors
+# - The same process applies when a class declaration is empty, like our fist
+#    implementation of VerboseAttrDict
 #
 # - http://www.python.org/download/releases/2.2.3/descrintro/#mro
 #===============================================================================
@@ -342,7 +360,9 @@ d_inst.class_attr
 
 
 #===============================================================================
-# MRO was changed in 2.2 (and 2.3) because with new-style all classes inherit from 'object', so suddenly diamond diagrams would appear:
+# MRO was changed in 2.2 (and 2.3) because with new-style all classes inherit
+#    from 'object', so suddenly diamond diagrams would appear:
+#
 # - old-tyle multiple inheritance diagram:
 #
 #  B   C
@@ -358,7 +378,7 @@ d_inst.class_attr
 #   \ /
 #    D
 #
-# - With the old (wrong) MRO would be: D, B, object, C, object!!
+# - With the old (wrong) MRO, it would be: D, B, object, C, object!!
 # - With the new one it is: D, B, C, object
 #===============================================================================
 
@@ -407,18 +427,19 @@ class Attr(object):
 
 
 # Option 5: exploit cooperative super call with mixins
-class VerboseAttribDict(Verbose, Attr, dict):
+class VerboseAttrDict(Verbose, Attr, dict):
     pass
 
 
 # Let's use this dict
-vd = VerboseAttribDict({'a': 1, 'b': 2})
+vd = VerboseAttrDict({'a': 1, 'b': 2})
 vd['c'] = 3
 vd.x = 7
 vd.a = 0
 vd.a
-vd
-VerboseAttribDict.__mro__
+print vd
+
+print VerboseAttrDict.__mro__
 
 
 ##===============================================================================
@@ -431,10 +452,10 @@ VerboseAttribDict.__mro__
 ##    - Lower attributes and key names for query or modification
 ##    - Convert attributes or keys datetime values to strings when they are modified
 ##    - Print all attributes and keys accesses for query or modification
-## - Check: http://docs.python.org/2/reference/datamodel.html?highlight=__contains__#object.__contains__
+## - Tip: http://docs.python.org/2/reference/datamodel.html?highlight=__contains__#object.__contains__
 ##
 ## INSTRUCTIONS:
-## - Go to exercices/exercise_3 and edit exercise_3.py
+## - Go to exercises/exercise_3 and edit exercise_3.py
 ## - Change the classes implementations to let tests_3.py pass
 ## - Check tests executing 'nosetests -sv'
 ##===============================================================================
@@ -465,7 +486,7 @@ class Lower(object):
         return super(Lower, self).__contains__(item.lower())
 
 
-# Nothing to do with Attr class implementation
+# Nothing to change in Attr class implementation
 class Attr(object):
     '''Access keys as attributes only if they already exist
     '''
@@ -506,7 +527,7 @@ class Verbose(object):
         print "__setattr__", name, value
         return super(Verbose, self).__setattr__(name, value)
 
-# Nothing to do with DateStr class implementation
+# Nothing to change in DateStr class implementation
 from datetime import datetime
 class DateStr(object):
     def __setitem__(self, key, value):
@@ -520,7 +541,7 @@ class DateStr(object):
         return super(DateStr, self).__setattr__(name, value)
 
 
-# Solution step 2: setup correct order of AmazingDict class ancestorts
+# Solution step 3: setup correct order of AmazingDict class ancestorts
 class AmazingDict(Attr, Lower, DateStr, Verbose, dict):
     pass
 

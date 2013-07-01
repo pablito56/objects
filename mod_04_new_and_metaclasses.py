@@ -25,7 +25,7 @@ verb_inst = VerboseCreator()
 # - It takes the class as first argument followed by all object constructor arguments
 # - It returns the new instance
 #    - Later __init__ will be called on that instance
-# - super inside __new__ has to provide the class as first parameter
+# - When calling __new__ with super, the class must be provided as first parameter
 #===============================================================================
 
 
@@ -61,14 +61,16 @@ print RoundedFloat(7.12345)
 #===============================================================================
 # Common uses:
 #   - Singleton pattern, although the most recommended implementation is using a module
-#   - Factory pattern, although we are gonna see a better solution
+#   - Factory pattern
 #   - When subclassing immutable types, to customize the instance creation
 #   - In custom metaclasses in order to customise class creation
 #===============================================================================
 
 
 # Metaclasses? What's that?
+
 print type(verb_dict_inst)
+
 print type(type(verb_dict_inst))
 
 print type(VerboseCreatorDict)
@@ -76,7 +78,7 @@ print type(VerboseCreatorDict)
 
 #===============================================================================
 # - The metaclass is the type of a class.
-# - New-style classes are constructed using type().
+# - By default new-style classes are constructed using type().
 # - A class definition is read into a separate namespace and the value of class name
 #   is bound to the result of calling type(name, bases, dict)
 #
@@ -85,26 +87,38 @@ print type(VerboseCreatorDict)
 
 
 # A simple example
-class MyMetaclass(type):
+class MyVerboseMetaclass(type):
     def __new__(mcs, name, bases, attrs):
-        print "NEW CLASS"
-        print "\t metaclass:", mcs
-        print "\t name:", name
-        print "\t bases:", bases
-        print "\t attrs:", attrs
-        new_class = super(MyMetaclass, mcs).__new__(mcs, name, bases, attrs)
+        print "NEW CLASS:"
+        print " - metaclass:", mcs
+        print " - name:", name
+        print " - bases:", bases
+        print " - attrs:", attrs
+        new_class = super(MyVerboseMetaclass, mcs).__new__(mcs, name, bases, attrs)
         return new_class
 
-class TrueFalseClass(object):
-    __metaclass__ = MyMetaclass
+
+# Let's use this metaclass. Pay attention
+
+
+class MyMetaclassedClass(object):
+    __metaclass__ = MyVerboseMetaclass
     class_attrib = "class attrib value"
-    def ret_false(self, *args, **kwargs):
-        return False
-    def ret_true(self, *args, **kwargs):
+
+    def method(self, *args, **kwargs):
         return True
 
 
+# Notice how the metaclass acts on import time, when creating the metaclassed class
+
+
+print MyMetaclassedClass
+
+print type(MyMetaclassedClass)
+
+
 # Let's see a real example
+
 # Let's implement a logging decorator
 def _logging_decorator(func):
     def logging_wrapper(*args, **kwargs):
@@ -152,7 +166,7 @@ tf_inst.ret_false(1, "xyz", arg1=7)
 #===============================================================================
 # Metaclasses usage:
 # - Modifying the class dictionary prior to the class being created
-# - Returning an instance of another class – essentially performing the role of a factory function.
+# - Returning an instance of another class like a factory pattern
 # - Really useful to modify classes (e.g. decorate classes methods) dynamically:
 #    - Logging
 #    - Timing or profiling

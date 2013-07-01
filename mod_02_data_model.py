@@ -326,7 +326,9 @@ class MyFraction(object):
         except AttributeError:
             return MyFraction(self.num + other * self.den, self.den)
 
-    __radd__ = __add__  # Reverse addition implementation: other + self
+    __radd__ = __add__  # Called to implement the binary arithmetic operation other + self
+
+    __iadd__ = __add__  # Called to implement the binary arithmetic operation self += other
 
 fract1 = MyFraction(5, 3)
 fract2 = MyFraction(2, 3)
@@ -336,6 +338,9 @@ print fract1 + 5
 
 print 3 + fract1
 
+fract2 += fract2
+print fract2
+
 
 #===============================================================================
 # More info on emulating numeric types:
@@ -343,7 +348,7 @@ print 3 + fract1
 #===============================================================================
 
 
-# Let's customise dicts
+# Let's customise dicts behaviour
 class AttrDict(dict):
     def __getattr__(self, name):
         '''Called when an attribute lookup has NOT FOUND the attribute in the usual places
@@ -386,7 +391,7 @@ print attr_d
 
 
 #===============================================================================
-# - And still more customisation methods:
+# - And yet more customisation methods:
 #
 #    - Hashing (i.e. use as dict key) and truth value testing
 #        - __hash__ and __nonzero__
@@ -408,6 +413,9 @@ print attr_d
 #
 #    - Descriptors and slots
 #        - __get__, __set__, __delete__, __slots__
+#
+#    - Instance and subclass checking
+#        - __instancecheck__, __subclasscheck__
 #===============================================================================
 
 
@@ -422,7 +430,7 @@ print attr_d
 ## - http://docs.python.org/2.7/reference/datamodel.html
 ##
 ## INSTRUCTIONS:
-## - Go to exercices/exercise_2 and edit exercise_2.py
+## - Go to exercises/exercise_2 and edit exercise_2.py
 ## - Change the functions and class implementation to let tests_2.py pass
 ## - Check tests executing 'nosetests -sv'
 ##===============================================================================
@@ -465,7 +473,8 @@ class CustomOrderedDict(OrderedDict):
 
 cod_inst = CustomOrderedDict(zip("abcde", range(1, 6)))
 print cod_inst
-print cod_inst[0:3] + cod_inst[3:10]
+
+print cod_inst[0:3] + cod_inst[4:10]
 
 
 # AttrDict accessing the dict only if key already exists
@@ -492,9 +501,11 @@ class AttrDict(dict):
 
 ad_inst = AttrDict(zip("abcde", range(1, 6)))
 print ad_inst
+
 ad_inst.f = 6
 ad_inst.a = 0
 del ad_inst.b
+
 print ad_inst
 print ad_inst.f
 
